@@ -1,0 +1,7 @@
+found fields in the table:
+%%sql
+DESCRIBE dogs;
+
+SELECT COUNT(DISTINCT)
+SELEC COUNT(*)
+SUM
