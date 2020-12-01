@@ -4,4 +4,10 @@ DESCRIBE dogs;
 
 SELECT COUNT(DISTINCT)
 SELEC COUNT(*)
-SUM
+
+AVG不是AVE often typo here.
+"" at end.
+%%sql
+SELECT test_name, AVG(rating)AS AVG_rating, MIN(rating)AS MIN_rating, MAX(rating)AS MAX_rating
+FROM reviews
+WHERE test_name ="memory versus Pointing";
