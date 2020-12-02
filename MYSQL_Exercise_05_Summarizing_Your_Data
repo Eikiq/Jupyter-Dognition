@@ -2,3 +2,30 @@
 %sql mysql://studentuser:studentpw@localhost/dognitiondb
 %sql USE dognitiondb
 
+%%sql
+SELECT test_name, AVG(rating) AS AVG_Rating
+FROM reviews
+GROUP BY test_name;
+
+%%sql
+SELECT COUNT(DISTINCT(dog_guid)),gender,breed
+FROM dogs
+GROUP BY gender,breed
+ORDER BY COUNT(dog_guid) DESC;
+
+%%sql
+SELECT COUNT(DISTINCT(dog_guid)),gender,breed
+FROM dogs
+GROUP BY 2,3
+ORDER BY 1 DESC;
+
+order: SELECT/FROM/WHERE/GROUP/HAVING/ORDER BY/LIMIT
+Having后不能用数字
+HAVING/GROUP里的选项必须也在SELECT中出现
+%%sql
+SELECT COUNT(DISTINCT(dog_guid)),gender,breed,breed_group
+FROM dogs
+WHERE breed_group IS NOT NULL OR breed_group!="None" OR breed_group!=""
+GROUP BY 2,4
+HAVING COUNT(DISTINCT(dog_guid))>=1000
+ORDER BY 1 DESC;
