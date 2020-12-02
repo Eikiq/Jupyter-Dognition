@@ -1,0 +1,60 @@
+found fields in the table:
+%%sql
+DESCRIBE dogs;
+
+
+SELECT COUNT(DISTINCT)
+SELEC COUNT(*)
+
+%%sql
+SELECT COUNT(DISTINCT(test_name))
+FROM exam_answers;
+
+
+AVG不是AVE often typo here.
+"" at end.
+%%sql
+SELECT test_name, AVG(rating)AS AVG_rating, MIN(rating)AS MIN_rating, MAX(rating)AS MAX_rating
+FROM reviews
+WHERE test_name ="memory versus Pointing";
+
+
+%%sql
+SELECT TIMESTAMPDIFF(minute,start_time,end_time) AS "Duration"
+FROM exam_answers; 
+
+%%sql
+SELECT AVG(TIMESTAMPDIFF(minute,start_time,end_time)) AS AVGDuration
+FROM exam_answers
+LIMIT 2000;
+
+%%sql
+SELECT AVG(TIMESTAMPDIFF(minute,start_time,end_time)) AS AVGTreatDuration
+FROM exam_answers
+WHERE test_name='Treat Warm-Up'
+LIMIT 2000;
+
+不能用SELECT MIN AN MAX,要用逗号
+%%sql
+SELECT MIN(TIMESTAMPDIFF(minute,start_time,end_time)) AS minDuration, 
+MAX(TIMESTAMPDIFF(minute,start_time,end_time)) AS MaxDuration
+
+把*放首先 然后WHERE那限制，不要令命名duration在第一行
+%%sql
+SELECT*
+FROM exam_answers
+WHERE TIMESTAMPDIFF(minute,start_time,end_time)<0;
+FROM exam_answers;
+
+
+第一行重命名之后，之后的行不能用新column name代替，还是要打出全部
+%%sql
+SELECT COUNT (TIMESTAMPDIFF(minute,start_time,end_time)) AS duration
+FROM exam_answers
+WHERE TIMESTAMPDIFF(minute,start_time,end_time)<0;
+
+选择任一column
+%%sql
+SELECT*
+FROM exam_answers
+WHERE TIMESTAMPDIFF(minute,start_time,end_time)<0;
