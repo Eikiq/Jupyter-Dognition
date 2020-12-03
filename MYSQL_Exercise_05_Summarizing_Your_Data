@@ -2,10 +2,12 @@
 %sql mysql://studentuser:studentpw@localhost/dognitiondb
 %sql USE dognitiondb
 
+
 %%sql
 SELECT test_name, AVG(rating) AS AVG_Rating
 FROM reviews
 GROUP BY test_name;
+
 
 %%sql
 SELECT COUNT(DISTINCT(dog_guid)),gender,breed
@@ -13,11 +15,13 @@ FROM dogs
 GROUP BY gender,breed
 ORDER BY COUNT(dog_guid) DESC;
 
+
 %%sql
 SELECT COUNT(DISTINCT(dog_guid)),gender,breed
 FROM dogs
 GROUP BY 2,3
 ORDER BY 1 DESC;
+
 
 order: SELECT/FROM/WHERE/GROUP/HAVING/ORDER BY/LIMIT
 Having后不能用数字
@@ -28,4 +32,21 @@ FROM dogs
 WHERE breed_group IS NOT NULL OR breed_group!="None" OR breed_group!=""
 GROUP BY 2,4
 HAVING COUNT(DISTINCT(dog_guid))>=1000
+ORDER BY 1 DESC;
+
+
+%%sql
+SELECT AVE(cretated_at),AVG(gender,breed,breed_group
+FROM dogs
+WHERE breed_group IS NOT NULL OR breed_group!="None" OR breed_group!=""
+GROUP BY 2,4
+HAVING COUNT(DISTINCT(dog_guid))>=1000
+ORDER BY 1 DESC;
+
+
+breed_type在哪位置 决定output 哪一个column在第一
+%%sql
+SELECT AVG(total_tests_completed),breed_type, AVG(mean_iti_minutes)
+FROM dogs
+GROUP BY 2
 ORDER BY 1 DESC;
