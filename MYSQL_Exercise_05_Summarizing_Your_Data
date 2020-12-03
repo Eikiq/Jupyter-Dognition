@@ -23,6 +23,16 @@ GROUP BY 2,3
 ORDER BY 1 DESC;
 
 
+hour放在TIMESTAMPDIFF里不是AVE后
+HAVING 不是 WHERE 这里要求条件满足同时HAVING 保持状态即可。
+%%sql
+SELECT AVG(TIMESTAMPDIFF(HOUR,start_time,end_time)),test_name
+FROM exam_answers
+WHERE TIMESTAMPDIFF(minute,start_time,end_time)<6000
+GROUP BY test_name
+HAVING AVG (TIMESTAMPDIFF(minute,start_time,end_time))>0
+ORDER BY AVG(TIMESTAMPDIFF(HOUR,start_time,end_time)) DESC;
+
 order: SELECT/FROM/WHERE/GROUP/HAVING/ORDER BY/LIMIT
 Having后不能用数字
 HAVING/GROUP里的选项必须也在SELECT中出现
@@ -53,6 +63,16 @@ ORDER BY 1 DESC;
 
 
 %%sql
-SELECT AVG(HOUR) 
-FROM 
-WHERE AVG() <6000 AND AVE>0;
+SELECT COUNT DISTINCT(user_guid),state,zip
+FROM users
+WHERE country=US
+ORDER BY state ASC, COUNT DISTINCT(user_guid) DESC;
+
+DISTINCT后不用加phrase
+US是string 记得“”
+%%sql
+SELECT COUNT(DISTINCT user_guid),state,zip,country
+FROM users
+WHERE country="US"
+GROUP BY state,zip
+ORDER BY state ASC, COUNT(DISTINCT user_guid) DESC;
