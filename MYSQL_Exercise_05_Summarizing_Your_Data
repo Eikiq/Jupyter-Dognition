@@ -50,3 +50,9 @@ SELECT AVG(total_tests_completed),breed_type, AVG(mean_iti_minutes)
 FROM dogs
 GROUP BY 2
 ORDER BY 1 DESC;
+
+
+%%sql
+SELECT AVG(HOUR) 
+FROM 
+WHERE AVG() <6000 AND AVE>0;
