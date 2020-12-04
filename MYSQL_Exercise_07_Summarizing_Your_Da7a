@@ -15,3 +15,28 @@ SELECT c.test_name,d.user_guid AS UserID, d.dog_guid AS DogID, d.breed, d.breed_
 FROM dogs d, complete_tests c
 WHERE d.dog_guid=c.dog_guid
 HAVING c.test_name='Yawn Warm-up';
+
+
+In theory, you can join as many tables together as you want or need. 
+To join multiple tables you take the same approach as we took when we were joining two tables together: 
+list all the fields you want to extract in the SELECT statement, specify which table they came from in the SELECT statement, 
+list all the tables from which you will need to extract the fields in the FROM statement, 
+and then tell the database how to connect the tables in the WHERE statement.
+
+
+line 32:分析怎么从User到Dogs的primary key
+%%sql
+SELECT DISTINCT d.user_guid AS UserID, u.membership_type,d.dog_guid AS DogID, d.breed
+FROM dogs d, users u,complete_tests c
+WHERE d.dog_guid=c.dog_guid 
+AND d.user_guid=u.user_guid
+AND d.breed='golden retriever';
+
+
+%%sql
+SELECT d.breed,d.dog_guid,COUNT(s.script_detail_id)
+FROM dogs d,site_activities s
+WHERE d.dog_guid=s.dog_guid 
+AND s.script_detail_id IS NOT NULL
+GROUP BY d.breed
+ORDER BY COUNT(s.script_detail_id) DESC;
