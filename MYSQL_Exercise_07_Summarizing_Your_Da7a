@@ -1,0 +1,17 @@
+SELECT d.dog_guid AS DogID, d.user_guid AS UserID, AVG(r.rating) AS AvgRating, 
+       COUNT(r.rating) AS NumRatings, d.breed, d.breed_group, d.breed_type
+FROM dogs d, reviews r
+WHERE d.dog_guid=r.dog_guid AND d.user_guid=r.user_guid
+GROUP BY d.user_guid
+HAVING NumRatings >= 10
+ORDER BY AvgRating DESC
+LIMIT 200
+
+SELECT之后跟着的顺序 决定了 output的数据顺序。
+
+注意缩写行在FROM那的写法  空格+直接缩写
+%%sql
+SELECT c.test_name,d.user_guid AS UserID, d.dog_guid AS DogID, d.breed, d.breed_group, d.breed_type
+FROM dogs d, complete_tests c
+WHERE d.dog_guid=c.dog_guid
+HAVING c.test_name='Yawn Warm-up';
