@@ -1,0 +1,35 @@
+Let's start by using a left outer join to get the list we want. 
+When we use the traditional join syntax to write inner joins, the order you enter the tables in your query doesn't matter. 
+In outer joins, however, the order matters a lot. 
+A left outer join will include all of the rows of the table to the left of the ON clause.  把左边的table都带进来。dogs行比reviews多。
+A right outer join will include all of the rows of the table to the right of the ON clause.  把右边的table都带进来。
+
+So in order to retrieve a full list of dogs who completed at least 10 tests in the reviews table, 把dogs tabled 都带进来的话。
+and include as much breed information as possible, we could query:
+
+SELECT r.dog_guid AS rDogID, d.dog_guid AS dDogID, r.user_guid AS rUserID, d.user_guid AS dUserID, 
+AVG(r.rating) AS AvgRating, COUNT(r.rating) AS NumRatings, d.breed, d.breed_group, d.breed_type
+FROM reviews r LEFT JOIN dogs d    左短右长。 从左(reviews)往右(dogs)加入。
+  ON r.dog_guid=d.dog_guid AND r.user_guid=d.user_guid  左边在=前
+WHERE r.dog_guid IS NOT NULL
+GROUP BY r.dog_guid
+HAVING NumRatings >= 10
+ORDER BY AvgRating DESC;
+
+%%sql
+SELECT r.dog_guid AS rDogID, d.dog_guid AS dDogID, r.user_guid AS rUserID,d.user_guid AS dUserID, 
+AVG(r.rating) AS AvgRating, COUNT(r.rating) AS
+NumRatings, d.breed, d.breed_group, d.breed_type
+FROM dogs d RIGHT JOIN reviews r   从右（dogs)往左(reviews)加入 右长左短。
+ON d.dog_guid=r.dog_guid AND d.user_guid=r.user_guid
+WHERE r.dog_guid IS NOT NULL
+GROUP BY r.dog_guid
+HAVING NumRatings >= 10
+ORDER BY AvgRating DESC;
+
+kankan W3school的解释。 FROM table1(不动，center） RIGHT JOIN table 2
+FROM dogs, RIGHT JOIN Reviews 
+ON d.dogs_guid=r.dog_guid 只取dogs和reviews香蕉的部分
+
+FROM reviews, LEFT JOIN dogs review不动， 左边加进来dogs， 以review的部分为准。let review dog_guid=d.dog_guid;
+ON r.dog_guid=d.dog_guid;
