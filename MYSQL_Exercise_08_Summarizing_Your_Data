@@ -33,3 +33,10 @@ ON d.dogs_guid=r.dog_guid 只取dogs和reviews香蕉的部分
 
 FROM reviews, LEFT JOIN dogs review不动， 左边加进来dogs， 以review的部分为准。let review dog_guid=d.dog_guid;
 ON r.dog_guid=d.dog_guid;
+
+
+%%sql
+SELECT d.dog_guid,c.dog_guid,d.user_guid,c.user_guid,COUNT(DISTINCT c.test_name)
+FROM dogs d LEFT JOIN complete_tests c
+ON d.dog_guid=c.dog_guid
+GROUP BY d.dog_guid;
