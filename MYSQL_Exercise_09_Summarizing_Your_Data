@@ -1,0 +1,56 @@
+%load_ext sql
+%sql mysql://studentuser:studentpw@localhost/dognitiondb
+%sql USE dognitiondb
+
+
+%%sql
+SELECT *
+FROM exam_answers 
+WHERE TIMESTAMPDIFF(minute,start_time,end_time) >
+    (SELECT AVG(TIMESTAMPDIFF(minute,start_time,end_time)) AS AvgDuration
+     FROM exam_answers
+     WHERE TIMESTAMPDIFF(minute,start_time,end_time)>0) AND test_name = 'Yawn Warm-up';
+     
+  
+%%sql
+SELECT *
+FROM exam_answers 
+WHERE TIMESTAMPDIFF(minute,start_time,end_time) >9934;
+
+
+%%sql
+SELECT * 
+FROM exam_answers
+WHERE test_name IN ('Puzzles','Numerosity','Bark Game');
+
+
+%%sql
+SELECT * 
+FROM exam_answers
+WHERE subcategory_name IN ('Puzzles','Numerosity','Bark Game');
+
+%%sql
+SELECT DISTINCT dog_guid
+FROM dogs
+WHERE breed NOT IN ('wORKING ','SPORTING','hearding');
+
+%%sql
+SELECT COUNT(DISTINCT dog_guid)
+FROM dogs
+WHERE breed_group NOT IN ('wORKING ','SPORTING','hearding');
+
+
+DD:We are required to give an alias to any derived table we create in subqueries within FROM statements.
+Otherwise there would be no way for the database to refer to the multiple columns within the temporary results we create.
+Second, we need to use this alias every time we want to execute a function that uses the derived table. 
+Remember that the results in which we are interested require a join between the dogs table and the temporary table, 
+not the dogs table and the original users table with duplicates. 
+That means we need to make sure we reference the temporary table alias in the ON, GROUP BY, and SELECT clauses.
+%%sql
+SELECT DD.user_guid, d.user_guid, count(*)
+FROM (SELECT DISTINCT u.user_guid 
+      FROM users u) AS DD 
+LEFT JOIN dogs d
+   ON DD.user_guid=d.user_guid
+GROUP BY DD.user_guid
+ORDER BY COUNT(*) DESC;
