@@ -1,0 +1,72 @@
+%load_ext sql
+%sql mysql://studentuser:studentpw@localhost/dognitiondb
+%sql USE dognitiondb
+
+
+%%sql
+SELECT IF(cleaned_users.first_account<'2014-06-01','early_user','late_user')AS user_type,COUNT(cleaned_user.first_account)
+FROM (SELECT user_guid, MIN(created_at) AS first_account
+     FROM users
+     GROUP BY user_guid) AS cleaned_users
+GROUP BY user_type;
+
+
+注意COUNT 放的位置
+%%sql
+SELECT IF(cleaned_users.first_account<'2014-06-01','early_user','late_user') AS user_type,
+       COUNT(cleaned_users.first_account)
+FROM (SELECT user_guid, MIN(created_at) AS first_account 
+      FROM users
+      GROUP BY user_guid) AS cleaned_users
+GROUP BY user_type;
+
+不是user_guid IS NOT NULL.
+%%sql
+SELECT DISTINCT user_guid,country 
+FROM users
+WHERE country IS NOT NULL;
+
+
+Q2 GROUP BY IF条件，所以必须给IF从句定义 不然太长
+%%sql
+SELECT IF(USR.country ='US','USA','FOREIGN') AS location,
+       COUNT (USR.user_guid)
+FROM (SELECT DISTINCT user_guid, country 
+      FROM users
+      WHERE country IS NOT NULL AND user_guid IS NOT NULL) AS USR
+GROUP BY location;
+
+
+CASE
+SELECT CASE cleaned_users.country
+            WHEN "US" THEN "In US"
+            WHEN "N/A" THEN "Not Applicable"
+            ELSE "Outside US"
+            END AS US_user, 
+      count(cleaned_users.user_guid)   
+FROM (SELECT DISTINCT user_guid, country 
+      FROM users
+      WHERE country IS NOT NULL) AS cleaned_users
+GROUP BY US_user
+
+
+Q3 SELECT后要加fields
+%%sql
+SELECT CASE dog_fixed 
+ WHEN =1 THEN 'neutered'
+ WHEN =0 THEN 'not neutered'
+ ELSE 'NULL'
+ END;
+ 
+ Q3 CORRECT 1. 要有SELECT 2.要有FROM CASE只是插入。case是接之前的，所以前面要有逗号。3.WHEN后面不用= 数字要’‘/
+ %%sql
+SELECT dog_guid,dog_fixed,
+ CASE dog_fixed 
+  WHEN '1' THEN 'neutered'
+  WHEN '0' THEN 'not neutered'
+  ELSE 'NULL'
+ END
+FROM dogs
+LIMIT 200;
+
+
