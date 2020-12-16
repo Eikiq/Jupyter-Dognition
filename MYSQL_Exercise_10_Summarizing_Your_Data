@@ -70,3 +70,89 @@ FROM dogs
 LIMIT 200;
 
 
+Q4 wrong:
+%%sql
+SELECT dog_guid
+ CASE
+ WHEN exclude="1",exclude
+ ELSE keep
+ END
+DROM dogs
+LIMIT 200;
+
+Q4 correct: a. WHEN+THEN b.WHEN后不用加= c.field要加引号
+%%sql
+SELECT dog_guid,exclude,
+ CASE exclude
+  WHEN '1'THEN 'exclude'
+  ELSE 'keep'
+  END
+FROM dogs
+LIMIT 200;
+
+
+Q5 WRONG: 忘记加前field, CASE后逗号。
+%%sql
+SELECT IF(exclude=1,exclude,keep)
+FROM dogs
+LIMIT 200;
+
+Q5正确
+%%sql
+SELECT dog_guid,exclude,
+ CASE exclude
+  WHEN '1'THEN 'exclude'
+  ELSE 'keep'
+  END
+FROM dogs
+LIMIT 200;
+
+
+Q10:
+%%sql
+SELECT d.dog_guid,d.breed_type,COUNT(c.created_at),
+IF (d.breed_type='pure preed','pure breeed','not_pure_breed')
+FROM dogs d,complete_tests c
+WHERE d.dog_guid=c.dog_guid
+GROUP BY dog_guid
+LIMIT 50;
+
+Q6:
+%%sql SELECT
+dog_guid, weight,
+CASE
+WHEN weight<=0 THEN "very small"
+WHEN weight>10 AND weight<=30 THEN "small"
+WHEN weight>30 AND weight<=50 THEN "medium"
+WHEN weight>50 AND weight<=85 THEN "large"
+WHEN weight>85 THEN "very large"
+END AS weight_grouped
+FROM dogs
+LIMIT 200;
+
+
+
+Q11 WRONG .1.漏加(）distinct旁边 2. state不要放在CASE后面，把allias加在END后面。
+%%sql
+SELECT COUNT DISTINCT user_guid,county,states,
+CASE state AS group
+WHEN 'NY' OR 'NJ' THEN 'group 1'
+WHEN 'NC' OR 'SC' THEN 'group 2'
+WHEN 'CA' THEN 'group 3'
+ELSE 'group 4'
+END
+FROM users
+GROUP BY Group；
+
+Q11 正确
+%%sql
+SELECT COUNT(DISTINCT user_guid),
+CASE
+WHEN (state="NY" OR state="NJ") THEN "Group 1-NY/NJ"
+WHEN (state="NC" OR state="SC") THEN "Group 2-NC/SC"
+WHEN state="CA" THEN "Group 3-CA"
+ELSE "Group 4-Other"
+END AS state_group
+FROM users
+WHERE country="US" AND state IS NOT NULL
+GROUP BY state_group
