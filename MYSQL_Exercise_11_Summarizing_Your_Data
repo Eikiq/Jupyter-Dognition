@@ -1,0 +1,18 @@
+Q4: wrong 漏在SUBSELECT里添加GROUP BY.
+%%sql
+SELECT dimension,AVG(num.amount)
+FROM (SELECT d.dog_guid,d.dimension,COUNT(c.created_at) AS amount
+      FROM dogs d JOIN complete_tests c
+      ON d.dog_guid=c.dog_guid) AS num
+GROUP BY num.dimension;
+
+
+Q4 CORRECT
+%%sql
+SELECT dimension, AVG(numtests_per_dog.numtests) AS avg_tests_completed
+FROM( SELECT d.dog_guid AS dogID, d.dimension AS dimension, count(c.created_at)
+AS numtests
+FROM dogs d JOIN complete_tests c
+ON d.dog_guid=c.dog_guid
+GROUP BY dogID) AS numtests_per_dog
+GROUP BY numtests_per_dog.dimension;
