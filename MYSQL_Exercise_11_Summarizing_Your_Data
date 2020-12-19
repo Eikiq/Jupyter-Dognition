@@ -127,3 +127,18 @@ FROM dogs d,complete_tests c
 WHERE d.dog_guid=c.dog_guid
 GROUP BY d.dog_guid
 LIMIT 50;
+
+
+
+Q15 MINE
+%%sql
+SELECT num.breed_type,num.dog_guid,AVG(num.amount),COUNT(DISTINCT num.dog_guid)
+FROM (SELECT d.dog_guid,d.breed_type,
+      CASE WHEN d.breed_type='PureBreed' THEN 'Pure_Breed'
+      ELSE 'Not_Pure_Breed' 
+      END,COUNT(c.created_at) AS amount
+      FROM dogs d JOIN complete_tests c
+      ON d.dog_guid=c.dog_guid
+      WHERE d.exclude IS NULL
+      GROUP BY d.dog_guid) AS num
+      GROUP BY num.breed_type;
