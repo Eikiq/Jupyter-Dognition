@@ -56,3 +56,62 @@ FROM (SELECT d.dog_guid,d.exclude,d.breed_group,COUNT(c.created_at) AS amount
       WHERE d.exclude IS NULL
       GROUP BY d.dog_guid) AS num
 GROUP BY num.breed_group;
+
+
+Q11
+%%sql 1.IN后面用（），2. HAVING和WHERE输出结果 COUNT DISTINCT dog_guid slight diff.
+SELECT num.breed_group,AVG(num.amount),COUNT(DISTINCT num.dog_guid)
+FROM (SELECT d.dog_guid,d.exclude,d.breed_group,COUNT(c.created_at) AS amount
+      FROM dogs d JOIN complete_tests c
+      ON d.dog_guid=c.dog_guid
+      WHERE d.exclude IS NULL
+      GROUP BY d.dog_guid) AS num
+WHERE num.breed_group IN ('Sporting','Hound','Herding','Working')
+GROUP BY num.breed_group;
+breed_group	AVG(num.amount)	COUNT(DISTINCT num.dog_guid)
+Herding	11.0560	1749
+Hound	9.8492	557
+Sporting	10.8710	2449
+Working	10.0199	855
+
+Q11 CORRECT 用HAVING
+%%sql
+SELECT breed_group, AVG(numtests_per_dog.numtests) AS avg_tests_completed,
+COUNT(DISTINCT dogID)
+FROM( SELECT d.dog_guid AS dogID, d.breed_group AS breed_group,
+count(c.created_at) AS numtests
+FROM dogs d JOIN complete_tests c
+ON d.dog_guid=c.dog_guid
+WHERE d.exclude IS NULL OR d.exclude=0
+GROUP BY dogID) AS numtests_per_dog
+GROUP BY breed_group
+HAVING breed_group IN ('Sporting','Hound','Herding','Working');
+breed_group	avg_tests_completed	COUNT(DISTINCT dogID)
+Herding	11.2469	1774
+Hound	10.0603	564
+Sporting	10.9915	2470
+Working	10.2358	865
+
+
+Q13 mine
+%%sql
+SELECT num.breed_type,COUNT(DISTINCT num.dog_guid),AVG(num.amount)
+FROM (SELECT d.breed_type,d.dog_guid,COUNT(c.created_at) AS amount
+      FROM dogs d JOIN complete_tests c
+      ON d.dog_guid=c.dog_guid
+      WHERE d.exclude IS NULL
+      GROUP BY d.dog_guid) AS num
+GROUP BY num.breed_type;
+
+
+%%sql CORRECT
+SELECT breed_type, AVG(numtests_per_dog.numtests) AS avg_tests_completed,
+COUNT(DISTINCT dogID)
+FROM( SELECT d.dog_guid AS dogID, d.breed_type AS breed_type,
+count(c.created_at) AS numtests
+FROM dogs d JOIN complete_tests c
+ON d.dog_guid=c.dog_guid
+WHERE d.exclude IS NULL OR d.exclude=0
+GROUP BY dogID) AS numtests_per_dog
+GROUP BY breed_type;
+
