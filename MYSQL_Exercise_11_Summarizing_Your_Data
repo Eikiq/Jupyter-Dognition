@@ -16,3 +16,43 @@ FROM dogs d JOIN complete_tests c
 ON d.dog_guid=c.dog_guid
 GROUP BY dogID) AS numtests_per_dog
 GROUP BY numtests_per_dog.dimension;
+
+
+Q5 先读SELECT derived table里的内容。derived table必须有Allias.
+%%sql
+SELECT num.dimension,COUNT(DISTINCT num.dog_guid)
+FROM (SELECT d.dog_guid,d.dimension
+      FROM dogs d JOIN complete_tests c
+      ON d.dog_guid=c.dog_guid
+      WHERE d.dimension IS NULL OR d.dimension =''
+      GROUP BY d.dog_guid) AS num
+GROUP BY num.dimension;
+
+Q7: 检查发现EXCLUDE=1的dimension不是0. 所以选择 exclude.NULL等于 exclude=!1
+%%sql 
+SELECT num.dimension,AVG(num.amount)
+FROM (SELECT d.dog_guid,d.dimension,COUNT(c.created_at) AS amount
+      FROM dogs d JOIN complete_tests c
+      ON d.dog_guid=c.dog_guid
+      WHERE (d.dimension IS NOT NULL AND d.dimension!='') AND (d.exclude IS NULL)
+      GROUP BY d.dog_guid) AS num
+GROUP BY num.dimension;
+
+Q9:
+%%sql
+SELECT d.breed,d.weight,d.exclude,MIN(c.created_at),MAX(c.created_at),COUNT(DISTINCT c.created_at)
+FROM dogs d JOIN complete_tests c
+ ON d.dog_guid=c.dog_guid
+WHERE breed_group IS NULL
+GROUP BY d.dog_guid;
+
+
+Q10 题目要求的是检查有多少dog_guid 所以要夹在SELECT后。
+%%sql
+SELECT num.breed_group,AVG(num.amount),COUNT(DISTINCT num.dog_guid)
+FROM (SELECT d.dog_guid,d.exclude,d.breed_group,COUNT(c.created_at) AS amount
+      FROM dogs d JOIN complete_tests c
+      ON d.dog_guid=c.dog_guid
+      WHERE d.exclude IS NULL
+      GROUP BY d.dog_guid) AS num
+GROUP BY num.breed_group;
